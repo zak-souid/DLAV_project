@@ -38,8 +38,9 @@ Here, we are able to pass a number of arguments:
 #### Model
 There are provided several models with pretrained weights for specific environments. Since we will implement our algorithm on a robot we have chosen the model **YOLOv5s** which is recommended for mobile deployments. Larger models like YOLOv5x will produce better results, but have more parameters, require more CUDA memory to train, and are slower to run. We trained our model with default **hyperparameters** which are provided in *hyp.scratch.yaml*.
 
-![Model selection
-](https://github.com/ultralytics/yolov5/releases/download/v1.0/model_comparison.png)
+<img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/model_comparison.png" width="450" align="left"/>  
+
+<br clear="left"/>
 
 #### Batch
 
@@ -53,28 +54,6 @@ As we have been provided with the computing clusters at EPFL **SCITAS** with pow
 ### 3) Object detection
 
 
-
-
-### Design an architecture
-We have chosen [YOLOv5](https://github.com/ultralytics/yolov5) as object detection architecture which belongs to the One-Stage Detectors.
-
-### Sanity check
-
-## Usage
-
-```python
-import foobar
-
-# returns 'words'
-foobar.pluralize('word')
-
-# returns 'geese'
-foobar.pluralize('goose')
-
-# returns 'phenomenon'
-foobar.singularize('phenomena')
-```
-
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
@@ -83,8 +62,3 @@ Please make sure to update tests as appropriate.
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
 
-
-
-<img src="https://miro.medium.com/max/1020/1*tjcmj9cDQ-rHXAtxCu5bRQ.png" width="150" align="left"/>  
-
-<br clear="left"/>
