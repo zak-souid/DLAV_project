@@ -38,7 +38,7 @@ Here, we are able to pass a number of arguments:
 #### Model
 There are provided several models with pretrained weights for specific environments. Since we will implement our algorithm on a robot we have chosen the model **YOLOv5s** which is recommended for mobile deployments. Larger models like YOLOv5x will produce better results, but have more parameters, require more CUDA memory to train, and are slower to run. We trained our model with default **hyperparameters** which are provided in *hyp.scratch.yaml*.
 
-<img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/model_comparison.png" width="450" align="left"/>  
+<img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/model_comparison.png" width="450" align="center"/>  
 
 <br clear="left"/>
 
@@ -50,8 +50,10 @@ As we have been provided with the computing clusters at EPFL **SCITAS** with pow
 1) increasing accuracy
 2) Loss curve
 
-
 ### 3) Object detection
+
+## Milestone 1
+pdjsoüfjnsd+ofnsüodfn
 
 
 ## Contributing
