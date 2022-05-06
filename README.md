@@ -51,7 +51,10 @@ As we have been provided with the computing clusters at EPFL **SCITAS** with pow
 
 ### 3) Object detection
 
-## Milestone 1
+## Milestone 2
+pdjsoüfjnsd+ofnsüodfn
+
+## Milestone 3
 pdjsoüfjnsd+ofnsüodfn
 
 
