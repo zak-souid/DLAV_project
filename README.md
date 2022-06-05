@@ -67,6 +67,10 @@ Here are the list of hardware components we were provided from the EPFL clusters
 <img src="./media/training_epochs.png" width="400" align="center"/> 
 <br clear="left"/>
 
+The script to launch the jupyter notebook is as follows:
+
+<img src="./media/launch_jupyter.png" width="400" align="center"/> 
+<br clear="left"/>
 
 
 #### 2.4) Monitor learning process
