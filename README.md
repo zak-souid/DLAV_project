@@ -130,9 +130,20 @@ In the beginning we had some problems to collect data in order to train our cust
 
 
 
+object_detect: detects objects using yolov5 model
+
+hand_detect: detects objects using hand model
+
+get_persons: takes all object detected and return objects that are person
+
+get_personOfInterest: match the detected hand object and try to match the bounding box with the bounding boxes of all the person objects
+
+For detection, JS response is first converted to OpenCV Image, then object_detect and hand_detect is ran to detect the objects. The person of interest is then identified and bounding boxes are finally drawn around the person we detects.
+
 ## Milestone 2
 
-SHORTLY EXPLAIN SIAMFC
+SIAMFC is a basic tracking algorithms with a fully-convolutional Siamese network. In this approach, a deep conv-net is trained to
+address a more general similarity learning problem in an initial offline phase, and the coresponding function is then evaluated online during tracking. The Siamese network is trained to located an exemplar image within a larger search image, where the similarity learning is done within the bilinear layers.
 
 EXPLAIN LOGIC WE IMPLEMENTED HOW TO TO THE DETECTION
 
