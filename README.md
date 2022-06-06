@@ -142,8 +142,17 @@ For detection, JS response is first converted to OpenCV Image, then object_detec
 
 ## Milestone 2
 
-SIAMFC is a basic tracking algorithms with a fully-convolutional Siamese network. In this approach, a deep conv-net is trained to
+We initially planned on trying both DeepSort and SiamFC 
+SiamFC is a basic tracking algorithms with a fully-convolutional Siamese network. In this approach, a deep conv-net is trained to
 address a more general similarity learning problem in an initial offline phase, and the coresponding function is then evaluated online during tracking. The Siamese network is trained to located an exemplar image within a larger search image, where the similarity learning is done within the bilinear layers.
+We started by implementing SiamFC. 
+
+### Principle
+Siamese Network based tracking algorithms are Single Object Trackers (SOT). We choose to track with SOT because of our needs in this application. We also preferred to not use detection based tracking, which is really common in detection
+
+
+We also tried to use SiamMask, a more modern Siamese network implementation. We planned on using it for the race and managed to make it work in Colab. The SiamMask.ipynb can demo it.
+
 
 EXPLAIN LOGIC WE IMPLEMENTED HOW TO TO THE DETECTION
 
