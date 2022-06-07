@@ -1,7 +1,7 @@
 # CIVIL-459: Spring 2022 Final Project
 
 ## Autors
-Cengizhan Bektas (350828)
+Cengizhan Bektas (350828), Bastien Darbellay (288406)
 
 
 ## Milestone 1
