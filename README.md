@@ -1,7 +1,9 @@
 # CIVIL-459: Spring 2022 Final Project
 
 ## Autors
-Cengizhan Bektas (350828)
+Cengizhan Bektas (350828)\
+Bastien Darbellay (288406)\
+Zakarya Souid 
 
 
 ## Milestone 1
@@ -74,9 +76,9 @@ The script to launch the jupyter notebook is as follows:
 
 
 #### 2.4) Monitor learning process
-Training results and metrics are automatically logged and can be found in: ***/m1/yolov5/runs/train/exp/results.png***.
+Training results and metrics are automatically logged and can be found in: ***/m1/yolo/runs/train/exp/results.png***.
 
-<img src="./m1/yolov5/runs/train/exp/results.png" width="750" align="center"/> 
+<img src="./m1/yolo/runs/train/exp/results.png" width="750" align="center"/> 
 <br clear="left"/>
 
 
@@ -94,22 +96,22 @@ For all the losses we can see, that these are descreasing with time. The initali
 
 
 #### 2.5) Training script and final model
-The trained model can be found in: ***/m1/yolov5/runs/train/exp/weights/best.pt***.
+The trained model can be found in: ***/m1/yolo/runs/train/exp/weights/best.pt***.
 The script we have used for train a custom model can be found in: ***/m1/dlav_yolov5_custom_training.ipynb***.
 
 ### 3) Measure performance of model
 
 After training the model some inferences were made with the test data to evaluate the custom YOLOv5 detectors performance.
 
-The results can be found in: ***/m1/yolov5/runs/detect/exp/***.
+The results can be found in: ***/m1/yolo/runs/detect/exp/***.
 
 Since 5% of our whole data is to test the performance of the detector, there are more than 500 predictions. We just put some of these examples in the folder above to keep the size of the final submission as small as possible.
 
 However, some examples are:
 
-<img src="./m1/yolov5/runs/detect/exp/Photo-on-27-04-22-at-18_png.rf.425ab079ddcb34f75223380b5145705a.jpg" width="300" align="left"/> 
-<img src="./m1/yolov5/runs/detect/exp/Photo-on-27-04-22-at-18--2-_png.rf.4e67994f24d827c8f11cdf409cd6a9eb.jpg" width="300" align="left"/>
-<img src="./m1/yolov5/runs/detect/exp/Photo-on-27-04-22-at-18--1-_png.rf.52f6ecaae458715d406b3ddaa849c79f.jpg" width="300" align="left"/> 
+<img src="./m1/yolo/runs/detect/exp/Photo-on-27-04-22-at-18_png.rf.425ab079ddcb34f75223380b5145705a.jpg" width="300" align="left"/> 
+<img src="./m1/yolo/runs/detect/exp/Photo-on-27-04-22-at-18--2-_png.rf.4e67994f24d827c8f11cdf409cd6a9eb.jpg" width="300" align="left"/>
+<img src="./m1/yolo/runs/detect/exp/Photo-on-27-04-22-at-18--1-_png.rf.52f6ecaae458715d406b3ddaa849c79f.jpg" width="300" align="left"/> 
 <br clear="left"/>
 
 
@@ -128,24 +130,21 @@ The script can be found in: ***/m1/m1.ipynb***.
 
 In the beginning we had some problems to collect data in order to train our custom model for the detection of the gesture. Finally we were able to find a huge set of data which were also allocated with the bounding box around the object we want to detect. In addition we initially had problems to train the model due the limited computational power on google colab. For this, we spend a lot of time to set up the environment on SCITAS to train our model without hardware limitations. Because of the fact that we added some augmentation to the data, we didnt have any problems to detect the person of interest in different situations (illuminated room, white background, ...).
 
+Another issue we had, appeared when two persons were one behind the other. The overlapping area of the hand and the persons were equal and could lead to a wrong initialization of the person of interest. To solve this problem, we decided to identify the person of interest not only based on the overlapping area with the hand, but also based on the size of the bounding box of the person. We assumed that the person of interest would be close to the robot and therefore have a bigger bounding box than the persons in the back. With this modification, we were able to accurately detect the person of interest, even in ambiguous conditions.
 
+### 6) Run the code
 
-object_detect: detects objects using yolov5 model
+1) Upload the folder "m1" to your Google Drive
+2) Upload the file best.pt to your Google Colab folder on your drive ("drive/MyDrive/Colab Notebooks/")
+3) Open m1.ipynb in Google Colab and run each cell one after the other. At the end you should see the feed of your front camera appear.
 
-hand_detect: detects objects using hand model
-
-get_persons: takes all object detected and return objects that are person
-
-get_personOfInterest: match the detected hand object and try to match the bounding box with the bounding boxes of all the person objects
-
-For detection, JS response is first converted to OpenCV Image, then object_detect and hand_detect is ran to detect the objects. The person of interest is then identified and bounding boxes are finally drawn around the person we detects.
+To change the camera from "front" to "rear", change the facingMode in the forth cell from "user" to "environment". 
 
 ## Milestone 2
 
-We initially planned on trying both DeepSort and SiamFC to acheive Milestone 2. 
+### 1) SiamFC
 
-#### talk about deepsort 
-deepsort being track-by-detection? 
+We initially planned on trying both DeepSort and SiamFC to acheive Milestone 2. 
 
 SiamFC is a basic tracking algorithms with a fully-convolutional Siamese network. In this approach, a deep conv-net is trained to address a more general similarity learning problem in an initial offline phase, and the coresponding function is then evaluated online during tracking. The Siamese network is trained to located an exemplar image within a larger search image, where the similarity learning is done within the bilinear layers.
 We started by implementing SiamFC. 
@@ -155,21 +154,38 @@ A demo version can be seen in the comb.ipynb Jupyter notebook.
 
 We also tried to use SiamMask, a more modern Siamese network implementation. We planned on using it for the race and managed to make it work in Colab. The SiamMaskdemo.ipynb can demo it.
 
-### Principle
+### 2) Principle
 
-SiamFC 
-<img src="./m2/images/SiamFCprinciple.png" width="300" align="left"/> 
+Object tracking is a specific field within computer vision that aims to track objects as they move across a series of video frames. The goal of object tracking is to train a model and estimate the target object present in the scene from previous frames. We completed this by taking a starting bounding box coordinate and creating a unique ID for each of the initial detections of the object and tracking them as they move while keeping the unique ID of each object. The specific learning model we used is a Siam-FC model with an AlexNet backend. The model takes in an instance image, and a search image, and uses the backend to process each image into a embedding, then uses cross-correlation to find the search image in the instance image. This project uses the [Lasot] (http://vision.cs.stonybrook.edu/~lasot/) dataset.
 
-<img src="./m2/images/ConvMap.png" width="300" align="left"/> 
+Siamese networks differ from most neural networks in that instead of classifying the inputs, they differentiate between two inputs. Siamese networks consist of two neural networks that are from the same class and have the same weights. Those networks are then fed an image pair, which are then fed into a cross entropy loss function that calculates the similarity of two inputs, optimizing the networks.
 
-### 
-EXPLAIN LOGIC WE IMPLEMENTED HOW TO TO THE DETECTION
+<img src="./media/SiamFCprinciple.png" width="500" align="left"/> 
 
-EXPLAIN KEY DECISIONS (HYPERPARAMETERS WE SET )
+<img src="./media/ConvMap.png" width="500" align="left"/> 
+
+### 3) Network
+
+The above image illustrates the SiamFC architecture. A trained image, z, and a search image, x, are passed into identical neural networks. The images are then rescaled and passed into a cross correlation function that generates a score map of the search image and the predictions of the tracked object within the image.
+
+The AlexNet architecture, illustrated above, consists of 5 Convolutional Layers and 3 Fully Connected Layers. The Convolutional Layers extract the object that corresponds to the unique ID within a given image passed through the neural network. The Fully Connected Layers use Max Pooling use pooling windows of size 3x3 with a stride of 2 between the adjacent windows in order to downsample the width and height of the tensors and keep the depth the same between windows. In addition, the Convolutional Layers each use a Rectified Linear Unit (ReLU) Activation function that clamp down any negative values in the network to 0, with positive values unchanged. The result of this function serves as the output of the Convolutional Layer.
+
+A loss function used in this model is a cross entropy loss function. The loss is first computed by taking in two parameters of the same class, the first parameter being 1 or 0 depending on the true value of the model and the second being model's prediction for that class. The loss function then returns the mean logarithm of the negative product between the two parameters and the training code stores the weights at which at the minimum loss occurs.
+
+### 4) Implementation 
+
+All the implementation we found of SiamFC were not real time and only analyzed a pre-recorded video. 
+We slightly modified the SiamFC library so it would accept images insted of paths to images and made sure to use the right image format, and wrote a notebook to use it in Google Colab. 
+
+SiamFC needs an array of images to make a prediction. It always looks back at the first reference image to do its "convolution sweeps" on a new image.  
+We chose to always give it the first image post detection, the image right before the last one and the most recent image. 
+That way, we did not hinder its performances too much and kept positionnal consistency if the subject of the tracking left for a few frames. 
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zak-souid/DLAV_project/blob/main/m2/Milestone2demo1.ipynb)
 
 ## Milestone 3
 
-JUST EXPLAIN WE JUST COMBINED M1 AND M2 AND DID SOME DEBUG TO CODE ETC
+For the last milestone we just combined the first milestones and insert this into the detector.py file we were provided for this project. We established a connection to our home directory on the V100 and copied all needed files in order to make to run our implementations. For this we just updated the ***class Detector()*** which was already implemented in the detector.py file. We inserted all the functions we implemented above and called the function for detection and tracking in the ***forward*** method, which is also implemented in the class Detector() inside the detector.py notebook.
 <!-- #endregion -->
 
 ## Contributing
