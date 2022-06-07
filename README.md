@@ -144,7 +144,7 @@ For detection, JS response is first converted to OpenCV Image, then object_detec
 
 1) Upload the folder "m1" to your Google Drive
 2) Upload the file best.pt to your Google Colab folder on your drive ("drive/MyDrive/Colab Notebooks/")
-3) Run each cell one after the other. At the end you should see the feed of your front camera appear.
+3) Open m1.ipynb in Google Colab and run each cell one after the other. At the end you should see the feed of your front camera appear.
 
 To change the camera from "front" to "rear", change the facingMode in the forth cell from "user" to "environment". 
 
