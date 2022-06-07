@@ -97,7 +97,7 @@ class Detector(object):
 
         # Model
         self.obj_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
-        self.hand_model = torch.hub.load('ultralytics/yolov5', 'custom', path='./best.pt')
+        self.hand_model = torch.hub.load('ultralytics/yolov5', 'custom', path='./../best.pt')
 
     def load(self, PATH):
         # self.model = torch.load(PATH)

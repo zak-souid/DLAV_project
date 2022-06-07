@@ -1,26 +1,26 @@
-import numpy as np
+# import modules
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-import os
+
+import PIL
 from PIL import Image
+
+import os
+import cv2
+import time
+import pandas as pd
+import numpy as np
+from collections import namedtuple
+from got10k.trackers import Tracker
 
 import torch
 import torch.nn.functional as F
-
-
-import cv2
-import numpy as np
-import PIL
-import time
-import pandas as pd
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-from collections import namedtuple
 from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.data import DataLoader
-from got10k.trackers import Tracker
+
 from siamfc import ops
 from siamfc.backbones import AlexNetV1
 from siamfc.heads import SiamFC
@@ -97,9 +97,7 @@ class Detector(object):
 
         # Model
         self.obj_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
-        self.hand_model = torch.hub.load('ultralytics/yolov5', 'custom', path='./best.pt')
-
-
+        self.hand_model = torch.hub.load('ultralytics/yolov5', 'custom', path='./../best.pt')
 
     def load(self, PATH):
         # self.model = torch.load(PATH)
@@ -194,18 +192,11 @@ class Detector(object):
         pers, persons_area = self.get_persons(obj)
         # detect hand
         hand = self.hand_detect(img)
-
         # identify person of interest
         idx_max, area_min, area_max = self.get_personOfInterest(pers,hand, persons_area)
         # create transparent overlay for bounding box
-        #bbox_array = np.zeros([480,640,4], dtype=np.uint8)
         bbox_array = [0,0,0,0]
         label = [0]
-
-        # draw bounding box of the hand (if multiple hands, just the first one)
-        # if (not hand.empty) and area_min!=None:
-        #     bbox_array = cv2.rectangle(bbox_array,(int(hand["xmin"].iloc[0]),int(hand["ymin"].iloc[0])), (int(hand["xmax"].iloc[0]),int(hand["ymax"].iloc[0])), (0, 0, 255), 2)
-        #     bbox_array = cv2.rectangle(bbox_array,tuple(area_min), tuple(area_max), (255, 0, 255), 2)
 
         # draw bounding boxes on overlay
         for index, row in pers.iterrows():
@@ -215,13 +206,9 @@ class Detector(object):
                 color = (0, 255, 0)
                 self.persOfInterest = True
                 self.bb_persOfInterest = [start_point[0], start_point[1], end_point[0]-start_point[0], end_point[1]-start_point[1]]
-                #print(bb_persOfInterest)
             else:
                 color = (255, 0, 0)
             thickness = 2
-            # bbox_array = cv2.rectangle(bbox_array,start_point, end_point, color, thickness)
-            #bbox_array = [float((int(row["xmin"])+int(row["xmax"]))/2), float((int(row["ymin"])+int(row["ymax"]))/2),float((int(row["xmax"])-int(row["xmin"]))),float((int(row["ymax"])-int(row["ymin"])))]
-            #label = [1]
 
         if(idx_max is None):
             bbox_array = [0,0,0,0]
@@ -238,66 +225,24 @@ class Detector(object):
 
         # convert JS response to OpenCV Image
         pair_img = [self.img_0, self.last_img, img]
-        # print("bbox",self.bb_persOfInterest)
-        # print("pair_img",np.shape(pair_img))
-        # print("last_img",np.shape(self.last_img))
-        # print("img",type(img))
         boxes, times = self.tracker.track(pair_img, self.bb_persOfInterest, visualize=False)
-        #print(boxes[1])
+        # start point
         start_point = (int(boxes[-1][0]),int(boxes[-1][1]))
-        #print(start_point)
+        # end point
         end_point = (int(boxes[-1][0])+int(boxes[-1][2]),int(boxes[-1][1])+int(boxes[-1][3]))
-        #print(end_point)
-
-        # bbox_array = np.zeros([480,640,4], dtype=np.uint8)
-        # bbox_array = cv2.rectangle(bbox_array, start_point, end_point, (255, 255, 0), 2)
         self.last_img=img
-
         bbox_array = [float(int(boxes[-1][0])+int(boxes[-1][2])/2),float(int(boxes[-1][1])+int(boxes[-1][3])/2),float(boxes[-1][2]),float(boxes[-1][3])]
         return bbox_array
 
     def forward(self, img):
-        ##Add a dimension
-        # img = np.expand_dims(img.transpose(2,0,1), 0) / 255
-        #img = np.moveaxis(np.array(img), -1, 0)
         img = np.array(img)
-        #
-        # ch1 = img[:,:,:,0].copy()
-        # ch3 = img[:,:,:,2].copy()
-        #
-        # img[:,:,:,0] = ch3
-        # img[:,:,:,2] = ch1
-
-        # print(img.shape)
-        #print(img.shape)
-
-        ##Preprocess
-        #img = (img - self.mean)/self.std
-
-        ##Transpose to model format
-        # if(img.shape[1] != self.num_channels):
-        #     img = img.transpose((0,3,1,2))
-        # img =  img.tolist()
         label = [0]
         if not self.persOfInterest:
             print("----Detect----")
             pred_bboxes, label = self.detect(img)
-
         else:
             print("----Tracking----")
             pred_bboxes = self.tracking(img)
             label = [1]
 
-
-        # print(img.shape)
-        # print(img)
-
-        ##Detect
-        # with torch.no_grad():
-        #     pred_y_box, pred_y_logit = self.model.forward(torch.tensor(img, dtype=torch.float32))
-
-        #     pred_y_box, pred_y_logit = pred_y_box.numpy(), pred_y_logit.numpy()
-        #     pred_y_label = pred_y_logit > 0.5
-        #     pred_bboxes = pred_y_box * self.img_size
-        #     # pred_bboxes = pred_bboxes.reshape(len(pred_bboxes), num_objects, -1)
         return pred_bboxes, label
