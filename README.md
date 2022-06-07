@@ -197,7 +197,7 @@ That way, we did not hinder its performances too much and kept positionnal consi
 
 ### NOT THE CASE ANYMORE :(
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zak-souid/DLAV_project/blob/main/m2/Milestone2demo.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zak-souid/DLAV_project/blob/main/m2/Milestone2demo1.ipynb)
 
 
 ### SiamMask
