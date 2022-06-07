@@ -128,7 +128,9 @@ The script can be found in: ***/m1/m1.ipynb***.
 
 In the beginning we had some problems to collect data in order to train our custom model for the detection of the gesture. Finally we were able to find a huge set of data which were also allocated with the bounding box around the object we want to detect. In addition we initially had problems to train the model due the limited computational power on google colab. For this, we spend a lot of time to set up the environment on SCITAS to train our model without hardware limitations. Because of the fact that we added some augmentation to the data, we didnt have any problems to detect the person of interest in different situations (illuminated room, white background, ...).
 
+Another issue we had, appeared when two persons were one behind the other. The overlapping area of the hand and the persons were equal and could lead to a wrong initialization of the person of interest. To solve this problem, we decided to identify the person of interest not only based on the overlapping area with the hand, but also based on the size of the bounding box of the person. We assumed that the person of interest would be close to the robot and therefore have a bigger bounding box than the persons in the back. With this modification, we were able to accurately detect the person of interest, even in ambiguous conditions.
 
+### 6) Code description
 
 object_detect: detects objects using yolov5 model
 
@@ -140,7 +142,7 @@ get_personOfInterest: match the detected hand object and try to match the boundi
 
 For detection, JS response is first converted to OpenCV Image, then object_detect and hand_detect is ran to detect the objects. The person of interest is then identified and bounding boxes are finally drawn around the person we detects.
 
-### 6) Run the code
+### 7) Run the code
 
 1) Upload the folder "m1" to your Google Drive
 2) Upload the file best.pt to your Google Colab folder on your drive ("drive/MyDrive/Colab Notebooks/")
