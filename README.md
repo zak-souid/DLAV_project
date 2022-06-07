@@ -140,6 +140,14 @@ get_personOfInterest: match the detected hand object and try to match the boundi
 
 For detection, JS response is first converted to OpenCV Image, then object_detect and hand_detect is ran to detect the objects. The person of interest is then identified and bounding boxes are finally drawn around the person we detects.
 
+### 6) Run the code
+
+1) Upload the folder "m1" to your Google Drive
+2) Upload the file best.pt to your Google Colab folder on your drive ("drive/MyDrive/Colab Notebooks/")
+3) Run each cell one after the other. At the end you should see the feed of your front camera appear.
+
+To change the camera from "front" to "rear", change the facingMode in the forth cell from "user" to "environment". 
+
 ## Milestone 2
 
 We initially planned on trying both DeepSort and SiamFC to acheive Milestone 2. 
