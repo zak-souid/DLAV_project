@@ -144,9 +144,6 @@ To change the camera from "front" to "rear", change the facingMode in the forth 
 
 We initially planned on trying both DeepSort and SiamFC to acheive Milestone 2. 
 
-#### Andrew please talk about deepsort quickly and why we didnt choose it 
-
-
 SiamFC is a basic tracking algorithms with a fully-convolutional Siamese network. In this approach, a deep conv-net is trained to address a more general similarity learning problem in an initial offline phase, and the coresponding function is then evaluated online during tracking. The Siamese network is trained to located an exemplar image within a larger search image, where the similarity learning is done within the bilinear layers.
 We started by implementing SiamFC. 
 
@@ -155,9 +152,9 @@ A demo version can be seen in the Milestone2demo1.ipynb Jupyter notebook.
 
 We also tried to use SiamMask, a more modern Siamese network implementation. We planned on using it for the race and managed to make it work in Colab. The Milestone2demo2.ipynb can demo it.
 
-### SiamFC
+### 1) SiamFC
 
-#### Principle
+#### 1.1) Principle
 
 We would like to thank Huang Lianghua for his Pytorch implementation of SiamFC  
 https://github.com/huanglianghua/siamfc-pytorch  
@@ -176,7 +173,7 @@ Siamese networks differ from most neural networks in that instead of classifying
 
 
 
-#### Network
+#### 1.2) Network
 
 The above image illustrates the SiamFC architecture. A trained image, z, and a search image, x, are passed into identical neural networks. The images are then rescaled and passed into a cross correlation function that generates a score map of the search image and the predictions of the tracked object within the image.
 
@@ -185,7 +182,7 @@ The Convolutional Layers extract the object that corresponds to the unique ID wi
 
 A loss function used in this model is a cross entropy loss function. The loss is first computed by taking in two parameters of the same class, the first parameter being 1 or 0 depending on the true value of the model and the second being model's prediction for that class. The loss function then returns the mean logarithm of the negative product between the two parameters and the training code stores the weights at which at the minimum loss occurs.
 
-#### Implementation 
+#### 1.3) Implementation 
 
 All the implementation we found of SiamFC were not real time and only analyzed a pre-recorded video. 
 We slightly modified the SiamFC-pytorch library and wrote a notebook to use it in Google Colab in real time. 
@@ -195,9 +192,9 @@ As soon as a person of interest is detected, through milestone 1, their bounding
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zak-souid/DLAV_project/blob/main/m2/Milestone2demo1.ipynb)
 
 
-### SiamMask
+### 2) SiamMask
 
-#### Principle
+#### 2.1) Principle
 
 We would like to thank Qiang Wang for his pytorch implementation of SiamMask  
 https://github.com/foolwood/SiamMask  
@@ -210,21 +207,20 @@ Our intention was to use SiamMask, as it improves on what we liked about SiamFC 
 SiamMask works largely as SiamFC but adds a by augmenting the loss with a binary segmentation task.  
 
 
-#### Network 
+#### 2.2) Network 
 
 SiamMask uses a ResNet-50 Network until the final convolutional layer of the 4-th stage. In order to obtain a high spatial resolution in deeper layers,  the output stride is reduced to 8 by using convolutions with stride 1. Moreover, we increase the receptive field by using dilated convolutions [6]. In our model, we add to the shared backbone fθ an unshared adjust layer (1×1 conv with 256 outputs).
 
 <img src="./media/siammask.png" width="800" align="left"/>  <br />   
 
 
-#### Implementation 
+#### 2.3 )Implementation 
 
 Again, the implementations of SiamMask were not real time. We adapted it to work with the webcam in colab.  
 Our implementation uses the confidence metric and make it visible in the webcam box : when the tracker is sure of seeing the tracked individual, the webcam box turns black except the individual. When confidence lowers, the opacity of the black lowers too and we see what the webcam sees again. This is very useful in case the robot looses the tracked person, so it does not just go to a random position. Also, with bounding "blobs" instead of bounding boxes, we can make sure the middle of the box does not point to somewhere that is not the person of interest.  
 You can try it in this colab notebook : 
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zak-souid/DLAV_project/blob/main/m2/Milestone2demo2.ipynb)
-
 
 
 ## Milestone 3
