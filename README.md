@@ -172,7 +172,7 @@ We also tried to use SiamMask, a more modern Siamese network implementation. We 
 We would like to thank Huang Lianghua for his Pytorch implementation of SiamFC  
 https://github.com/huanglianghua/siamfc-pytorch  
 
-and Luca Bertinetto *, Jack Valmadre *, João F. Henriques, Andrea Vedaldi and Philip H.S. Torr at Oxford University for the *Fully-Convolutional Siamese Networks for Object Tracking¨ publication   
+and Luca Bertinetto , Jack Valmadre , João F. Henriques, Andrea Vedaldi and Philip H.S. Torr at Oxford University for the *Fully-Convolutional Siamese Networks for Object Tracking* publication   
 https://www.robots.ox.ac.uk/~luca/siamese-fc.html  
 
 we used is a Siam-FC model with an AlexNet backend. The model takes in an image where the feature (here a person) is and its location on that image, and a search image, and uses the backend to process each image into an embedding, then uses cross-correlation to find the search image in the instance image.  
@@ -206,6 +206,14 @@ As soon as a person of interest is detected, through milestone 1, their bounding
 
 
 ### SiamMask
+
+#### Principle
+
+We would like to thank Qiang Wang for his pytorch implementation of SiamMask  
+https://github.com/foolwood/SiamMask  
+
+and Qiang Wang, Li Zhang, Luca Bertinetto, Weiming Hu, and Philip H.S. Torr at Oxford University for the *Fast Online Object Tracking and Segmentation: A Unifying Approach* publication  
+https://www.robots.ox.ac.uk/~qwang/SiamMask/
 
 Our intention was to use SiamMask, as it improves on what we liked about SiamFC and added some features we found useful, as the confidence metric and the mask feature. 
 
