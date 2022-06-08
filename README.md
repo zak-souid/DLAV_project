@@ -207,11 +207,27 @@ As soon as a person of interest is detected, through milestone 1, their bounding
 
 ### SiamMask
 
-Our intention was to use SiamMask, as it improves on what we liked about SiamFC and added some features we found useful, as a confidence metric. 
+Our intention was to use SiamMask, as it improves on what we liked about SiamFC and added some features we found useful, as the confidence metric and the mask feature. 
 
-SiamMask works largely as SiamFC but adds a by augmenting the loss with a binary segmentation task /// 
+SiamMask works largely as SiamFC but adds a by augmenting the loss with a binary segmentation task.  
 
-Our implementation uses the confidence metric and make it visible in the webcam box : when the tracker is sure of seeing the tracked individual, the webcam box turns black except the individual. When confidence lowers, the opacity of the black lowers too and we see what the webcam sees again. This is very useful in case the robot looses the tracked person
+
+#### Network 
+
+SiamMask uses a ResNet-50 Network until the final convolutional layer of the 4-th stage. In order to obtain a high spatial resolution in deeper layers,  the output stride is reduced to 8 by using convolutions with stride 1. Moreover, we increase the receptive field by using dilated convolutions [6]. In our model, we add to the shared backbone fθ an unshared adjust layer (1×1 conv with 256 outputs).
+
+<img src="./m2/images/SiamMask.png" width="500" align="left"/>   
+
+
+#### Implementation 
+
+Again, the implementations of SiamMask were not real time. We adapted it to work with the webcam in colab.  
+Our implementation uses the confidence metric and make it visible in the webcam box : when the tracker is sure of seeing the tracked individual, the webcam box turns black except the individual. When confidence lowers, the opacity of the black lowers too and we see what the webcam sees again. This is very useful in case the robot looses the tracked person, so it does not just go to a random position. Also, with bounding "blobs" instead of bounding boxes, we can make sure the middle of the box does not point to somewhere that is not the person of interest.  
+You can try it in this colab notebook : 
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zak-souid/DLAV_project/blob/main/m2/Milestone2demo2.ipynb)
+
+
 ## Milestone 3
 
 JUST EXPLAIN WE JUST COMBINED M1 AND M2 AND DID SOME DEBUG TO CODE ETC
