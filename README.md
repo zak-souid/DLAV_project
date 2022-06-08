@@ -180,9 +180,9 @@ we used is a Siam-FC model with an AlexNet backend. The model takes in an image 
 Siamese networks differ from most neural networks in that instead of classifying the inputs, they differentiate between two inputs. Siamese networks are "Siamese" because they consist of two neural networks that are from the same class and have the same weights. Once the two images go through the two networks, it is then fed to a cross entropy loss function that calculates the similarity of two inputs, optimizing the networks.  
 
  
-<img src="./m2/images/SiamFCprinciple.png" width="500" align="left"/>   
+<img src="./m2/images/SiamFCprinciple.png" width="800" align="left"/>    <br />
 
-<img src="./m2/images/ConvMap.png" width="500" align="left"/>   
+<img src="./m2/images/ConvMap.png" width="800" align="left"/>    <br />
 
 
 
@@ -216,7 +216,7 @@ SiamMask works largely as SiamFC but adds a by augmenting the loss with a binary
 
 SiamMask uses a ResNet-50 Network until the final convolutional layer of the 4-th stage. In order to obtain a high spatial resolution in deeper layers,  the output stride is reduced to 8 by using convolutions with stride 1. Moreover, we increase the receptive field by using dilated convolutions [6]. In our model, we add to the shared backbone fθ an unshared adjust layer (1×1 conv with 256 outputs).
 
-<img src="./m2/images/SiamMask.png" width="500" align="left"/>   
+<img src="./m2/images/siammask.png" width="800" align="left"/>  <br />   
 
 
 #### Implementation 
