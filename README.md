@@ -3,7 +3,7 @@
 ## Autors
 Cengizhan Bektas (350828)\
 Bastien Darbellay (288406)\
-Zakarya Souid 
+Zakarya Souid (287759)
 
 
 ## Milestone 1
@@ -142,46 +142,90 @@ To change the camera from "front" to "rear", change the facingMode in the forth 
 
 ## Milestone 2
 
-### 1) SiamFC
-
 We initially planned on trying both DeepSort and SiamFC to acheive Milestone 2. 
+
+#### Andrew please talk about deepsort quickly and why we didnt choose it 
+
 
 SiamFC is a basic tracking algorithms with a fully-convolutional Siamese network. In this approach, a deep conv-net is trained to address a more general similarity learning problem in an initial offline phase, and the coresponding function is then evaluated online during tracking. The Siamese network is trained to located an exemplar image within a larger search image, where the similarity learning is done within the bilinear layers.
 We started by implementing SiamFC. 
 
 Siamese Network based tracking algorithms are Single Object Trackers (SOT). We choose to track with SOT because of our needs in this application. We also preferred to not use detection based tracking, which is really common in tracking, because we thought this approach to be more interesting, given we already had to do detection for milestone 1.
-A demo version can be seen in the comb.ipynb Jupyter notebook.
+A demo version can be seen in the Milestone2demo1.ipynb Jupyter notebook.
 
-We also tried to use SiamMask, a more modern Siamese network implementation. We planned on using it for the race and managed to make it work in Colab. The SiamMaskdemo.ipynb can demo it.
+We also tried to use SiamMask, a more modern Siamese network implementation. We planned on using it for the race and managed to make it work in Colab. The Milestone2demo2.ipynb can demo it.
 
-### 2) Principle
+### SiamFC
 
-Object tracking is a specific field within computer vision that aims to track objects as they move across a series of video frames. The goal of object tracking is to train a model and estimate the target object present in the scene from previous frames. We completed this by taking a starting bounding box coordinate and creating a unique ID for each of the initial detections of the object and tracking them as they move while keeping the unique ID of each object. The specific learning model we used is a Siam-FC model with an AlexNet backend. The model takes in an instance image, and a search image, and uses the backend to process each image into a embedding, then uses cross-correlation to find the search image in the instance image. This project uses the [Lasot] (http://vision.cs.stonybrook.edu/~lasot/) dataset.
+#### Principle
 
-Siamese networks differ from most neural networks in that instead of classifying the inputs, they differentiate between two inputs. Siamese networks consist of two neural networks that are from the same class and have the same weights. Those networks are then fed an image pair, which are then fed into a cross entropy loss function that calculates the similarity of two inputs, optimizing the networks.
+We would like to thank Huang Lianghua for his Pytorch implementation of SiamFC  
+https://github.com/huanglianghua/siamfc-pytorch  
 
-<img src="./media/SiamFCprinciple.png" width="500" align="left"/> 
+and Luca Bertinetto , Jack Valmadre , João F. Henriques, Andrea Vedaldi and Philip H.S. Torr at Oxford University for the *Fully-Convolutional Siamese Networks for Object Tracking* publication   
+https://www.robots.ox.ac.uk/~luca/siamese-fc.html  
 
-<img src="./media/ConvMap.png" width="500" align="left"/> 
+we used is a Siam-FC model with an AlexNet backend. The model takes in an image where the feature (here a person) is and its location on that image, and a search image, and uses the backend to process each image into an embedding, then uses cross-correlation to find the search image in the instance image.  
 
-### 3) Network
+Siamese networks differ from most neural networks in that instead of classifying the inputs, they differentiate between two inputs. Siamese networks are "Siamese" because they consist of two neural networks that are from the same class and have the same weights. Once the two images go through the two networks, it is then fed to a cross entropy loss function that calculates the similarity of two inputs, optimizing the networks.  
+
+ 
+<img src="./media/SiamFCprinciple.png" width="800" align="left"/>    <br />
+
+<img src="./media/ConvMap.png" width="800" align="left"/>    <br />
+
+
+
+#### Network
 
 The above image illustrates the SiamFC architecture. A trained image, z, and a search image, x, are passed into identical neural networks. The images are then rescaled and passed into a cross correlation function that generates a score map of the search image and the predictions of the tracked object within the image.
 
-The AlexNet architecture, illustrated above, consists of 5 Convolutional Layers and 3 Fully Connected Layers. The Convolutional Layers extract the object that corresponds to the unique ID within a given image passed through the neural network. The Fully Connected Layers use Max Pooling use pooling windows of size 3x3 with a stride of 2 between the adjacent windows in order to downsample the width and height of the tensors and keep the depth the same between windows. In addition, the Convolutional Layers each use a Rectified Linear Unit (ReLU) Activation function that clamp down any negative values in the network to 0, with positive values unchanged. The result of this function serves as the output of the Convolutional Layer.
+The tracker uses the AlexNet architecture, with 5 Convplutional layers and 3 Fully Connected layers.
+The Convolutional Layers extract the object that corresponds to the unique ID within a given image passed through the neural network. The Fully Connected Layers use Max Pooling with 3x3 pooling windows with a stride of 2 between the adjacent windows in order to downsample the width and height of the tensors and keep the depth the same between windows. In addition, the Convolutional Layers each use a Rectified Linear Unit (ReLU) Activation function that clamp down any negative values in the network to 0, with positive values unchanged. The result of this function serves as the output of the Convolutional Layer.
 
 A loss function used in this model is a cross entropy loss function. The loss is first computed by taking in two parameters of the same class, the first parameter being 1 or 0 depending on the true value of the model and the second being model's prediction for that class. The loss function then returns the mean logarithm of the negative product between the two parameters and the training code stores the weights at which at the minimum loss occurs.
 
-### 4) Implementation 
+#### Implementation 
 
 All the implementation we found of SiamFC were not real time and only analyzed a pre-recorded video. 
-We slightly modified the SiamFC library so it would accept images insted of paths to images and made sure to use the right image format, and wrote a notebook to use it in Google Colab. 
+We slightly modified the SiamFC-pytorch library and wrote a notebook to use it in Google Colab in real time. 
 
-SiamFC needs an array of images to make a prediction. It always looks back at the first reference image to do its "convolution sweeps" on a new image.  
-We chose to always give it the first image post detection, the image right before the last one and the most recent image. 
-That way, we did not hinder its performances too much and kept positionnal consistency if the subject of the tracking left for a few frames. 
 
+As soon as a person of interest is detected, through milestone 1, their bounding box is given to the initialization part of the tracker with the image it was detected on. After that, each frame is given to the tracker through an updating function, without redoing the initialization again under any circumstance. If the tracker looses the person of interest, it simple catches it back when their in the frame again, without asking to be reinitialized. 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zak-souid/DLAV_project/blob/main/m2/Milestone2demo1.ipynb)
+
+
+### SiamMask
+
+#### Principle
+
+We would like to thank Qiang Wang for his pytorch implementation of SiamMask  
+https://github.com/foolwood/SiamMask  
+
+and Qiang Wang, Li Zhang, Luca Bertinetto, Weiming Hu, and Philip H.S. Torr at Oxford University for the *Fast Online Object Tracking and Segmentation: A Unifying Approach* publication  
+https://www.robots.ox.ac.uk/~qwang/SiamMask/
+
+Our intention was to use SiamMask, as it improves on what we liked about SiamFC and added some features we found useful, as the confidence metric and the mask feature. 
+
+SiamMask works largely as SiamFC but adds a by augmenting the loss with a binary segmentation task.  
+
+
+#### Network 
+
+SiamMask uses a ResNet-50 Network until the final convolutional layer of the 4-th stage. In order to obtain a high spatial resolution in deeper layers,  the output stride is reduced to 8 by using convolutions with stride 1. Moreover, we increase the receptive field by using dilated convolutions [6]. In our model, we add to the shared backbone fθ an unshared adjust layer (1×1 conv with 256 outputs).
+
+<img src="./media/siammask.png" width="800" align="left"/>  <br />   
+
+
+#### Implementation 
+
+Again, the implementations of SiamMask were not real time. We adapted it to work with the webcam in colab.  
+Our implementation uses the confidence metric and make it visible in the webcam box : when the tracker is sure of seeing the tracked individual, the webcam box turns black except the individual. When confidence lowers, the opacity of the black lowers too and we see what the webcam sees again. This is very useful in case the robot looses the tracked person, so it does not just go to a random position. Also, with bounding "blobs" instead of bounding boxes, we can make sure the middle of the box does not point to somewhere that is not the person of interest.  
+You can try it in this colab notebook : 
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zak-souid/DLAV_project/blob/main/m2/Milestone2demo2.ipynb)
+
+
 
 ## Milestone 3
 
